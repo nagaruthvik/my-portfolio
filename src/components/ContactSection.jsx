@@ -1,6 +1,7 @@
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FiSend, FiMail, FiLinkedin, FiGithub } from "react-icons/fi";
+import axios from "axios";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ export default function ContactSection() {
     email: "",
     message: "",
   });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const controls = useAnimation();
   const sectionRef = useRef(null);
@@ -18,13 +20,27 @@ export default function ContactSection() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     controls.start({
       background: ["#0f172a", "#1e1b4b", "#0f172a"],
       transition: { duration: 1.5 },
     });
+    console.log(formData);
     setIsSubmitted(true);
+   
+
+    const api = await axios.post(
+      `${import.meta.env.VITE_API_URL}api/contact`,
+      formData
+    );
+    setFormData({
+      name :"",
+      email:"",
+      message :""
+    })
+
+    
     setTimeout(() => setIsSubmitted(false), 3000);
   };
 
